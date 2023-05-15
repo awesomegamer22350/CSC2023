@@ -21,14 +21,26 @@ def update(rownum, btnid):
 		if biglist[x][0]==rownum:
 			biglist[x][1][btnid-1][0].configure(text=editEntrybox.get())
 
-
 def log(*args):
 	global identification
 	identification+=1
 	rownum=identification
-	biglist.append([rownum, [
-	[Label(Frame3, text=ReceiptEntrybox.get(), font=("Arial", 13, "bold"), height=1),
-	Button(Frame3, text=f"Update Receipt {ReceiptEntrybox.get()}", command=lambda btnid=1: update(rownum, btnid))],
+	receiptnum=int(ReceiptEntrybox.get())
+
+	receiptposition=-1; a=0
+	for receiptposition, y in enumerate(sortlist):
+		if receiptnum<=y:
+			a=1
+			break
+	if a==0:
+		receiptposition+=1
+
+	print(receiptposition)
+	sortlist.insert(receiptposition, receiptnum)
+	print(sortlist)
+	biglist.insert(receiptposition, [rownum, [
+	[Label(Frame3, text=receiptnum, font=("Arial", 13, "bold"), height=1),
+	Button(Frame3, text=f"Update Receipt {receiptnum}", command=lambda btnid=1: update(rownum, btnid))],
 	[Label(Frame3, text=CustomernameEntrybox.get()),
 	Button(Frame3, text=f"Update Name", command=lambda btnid=2: update(rownum, btnid))],
 	[Label(Frame3, text=ItemHiredEntrybox.get()),
@@ -37,12 +49,15 @@ def log(*args):
 	Button(Frame3, text=f"Update hired no.", command=lambda btnid=4: update(rownum, btnid))],
 	[Label(Frame3, text=""),
   	Button(Frame3, text="Delete Receipt", command=lambda: deletegroup(rownum))]
-	], Label(Frame3, text='', height=2)
-	])
-	for y in range(len(biglist[-1][1])):
-		biglist[-1][1][y][0].grid(row=2*len(biglist)+1, column=y)
-		biglist[-1][1][y][1].grid(row=2*len(biglist)+2, column=y)
-	biglist[-1][2].grid(row=2*len(biglist)+2, column= 5)
+	], 
+	Label(Frame3, text='', height=2)])
+
+	for x, y in enumerate(biglist):
+		for p, q in enumerate(y[1]):
+			q[0].grid(row=2*x+1, column=p)
+			q[1].grid(row=2*x+2, column=p)
+		y[2].grid(row=2*x+2, column=5)
+
 	updateScrollRegion()
 
 # delete a group
@@ -54,11 +69,11 @@ def deletegroup(row):
 			del biglist[x]
 			break
 	# update text
-	for x in range(len(biglist)):
-		for y in biglist[x][1]:
-			y[0].grid(row=2*x+1)
-			y[1].grid(row=2*x+2)
-		biglist[x][2].grid(row=2*x+2)
+	for x, y in enumerate(biglist):
+		for q in y[1]:
+			q[0].grid(row=2*x+1)
+			q[1].grid(row=2*x+2)
+		y[2].grid(row=2*x+2)
 	for line in saved:
 		line[0].grid_remove()
 		line[1].grid_remove()
@@ -83,6 +98,7 @@ def unbindToCanvas(*args):
 
 categorylist = ["Receipt no.", "Customer Name: ", "Item Hired: ", "Number of Items Hired: "]
 biglist = []
+sortlist = []
 identification=-1
 
 
@@ -115,6 +131,7 @@ NumHiredEntrybox.grid(row=0, column=7)
 
 Logbtn = Button(Frame1, text= 'Log Receipt', command= log)
 Logbtn.grid(row=0, column=8)
+
 
 
 editTextbox = Label(Frame1, text='Input below and then press an "update" button')
@@ -165,7 +182,6 @@ Frame3.bind("<Leave>", lambda event: unbindToCanvas())
 # Text for Catagories
 for i in range(len(categorylist)):
 	Label(Frame3, text=categorylist[i], width=20, height=2, font=("Arial", 14, "bold"),anchor=W).grid(row=0, column=i)
-
 
 
 root.mainloop()
