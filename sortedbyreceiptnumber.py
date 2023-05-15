@@ -29,7 +29,7 @@ def log(*args):
 
 	receiptposition=-1; a=0
 	for receiptposition, y in enumerate(sortlist):
-		if receiptnum<=y:
+		if receiptnum<y:
 			a=1
 			break
 	if a==0:
@@ -66,6 +66,7 @@ def deletegroup(row):
 	for x in range(len(biglist)):
 		if biglist[x][0] == row:
 			saved = biglist[x][1]
+			del sortlist[x]
 			del biglist[x]
 			break
 	# update text
