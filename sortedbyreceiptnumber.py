@@ -6,55 +6,11 @@ root = Tk()
 root.title("Julie's Party")
 root.geometry("1400x800")
 
-def removefromgrid(removethis):
+def removefromgrid(removethis): #for root.after
 	removethis.grid_remove()
 
-def update(rownum, btnid):
-	for x in range(len(biglist)):
-		if biglist[x][0]==rownum:
-			biglist[x][1][btnid-1][0].configure(text=editEntrybox.get())
-			biglist[x][1][4][0].configure(text=datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
-			if btnid==1:
-				biglist[x][1][0][1].configure(text=f'Update Receipt {editEntrybox.get()}')
-				del sortlist[x]
-				pp=biglist.pop(x)
-
-				receiptnum=int(editEntrybox.get())
-				print(receiptnum)
-				receiptposition=-1; a=0
-				for receiptposition, y in enumerate(sortlist):
-					if receiptnum<y:
-						a=1
-						break
-				if a==0:
-					receiptposition+=1
-				sortlist.insert(receiptposition, receiptnum)
-				biglist.insert(receiptposition, pp)
-				for x, y in enumerate(biglist):
-					for p, q in enumerate(y[1]):
-						q[0].grid(row=3*x+1, column=p)
-						q[1].grid(row=3*x+2, column=p)
-					y[2].grid(row=3*x+2)
-					y[3].grid(row=3*x+3)
-	#if len(editEntrybox.get()) >= 23:
-	#	toolonglbl.grid()
-	#	root.after(3000, lambda: removefromgrid(toolonglbl))
-	#	return
-	#if btnid==3:
-	#	if Entrybox.get().strip().isdigit() == FALSE:
-	#		notanintlbl.grid()
-	#		root.after(3000, lambda: removefromgrid(notanintlbl))
-	#		return
-	updateScrollRegion()
-
-
-def log(*args):
-	global identification
-	identification+=1
-	rownum=identification
-	receiptnum=int(ReceiptEntrybox.get())
-
+def sortreceipt(receiptnum):
 	receiptposition=-1; a=0
 	for receiptposition, y in enumerate(sortlist):
 		if receiptnum<y:
@@ -63,14 +19,113 @@ def log(*args):
 	if a==0:
 		receiptposition+=1
 	sortlist.insert(receiptposition, receiptnum)
+	return receiptposition
+
+
+
+def update(rownum, btnid):
+	for x in range(len(biglist)):
+		if biglist[x][0]==rownum:
+			editbox = editEntrybox.get()
+
+			if editbox =='':
+				isemptylbl.grid(row=2, column=0, columnspan=10, sticky=W)
+				root.after(2000, lambda: removefromgrid(isemptylbl))
+				return
+			
+			if len(editbox)>14:
+				toolonglbl.grid(row=2, column=0, columnspan=10, sticky=W)
+				root.after(2000, lambda: removefromgrid(toolonglbl))
+
+			if btnid==1 or btnid==4:
+				try:
+					editbox = int(editbox)
+				except:
+					notanintlbl.grid(row=2, column=0, columnspan=10, sticky=W)
+					root.after(2000, lambda: removefromgrid(notanintlbl))
+					return
+	
+				if editbox<0:
+					negativeintlbl.grid(row=2, column=0, columnspan=10, sticky=W)
+					root.after(2000, lambda: removefromgrid(negativeintlbl))
+					return
+
+			print(sortlist)
+			print(editbox in sortlist)
+			if btnid==1 and editbox in sortlist:
+				alreadyexistslbl.grid(row=2, column=0, columnspan=10, sticky=W)
+				root.after(2000, lambda: removefromgrid(alreadyexistslbl))
+				return					
+
+			biglist[x][1][btnid-1][0].configure(text=editEntrybox.get())
+			biglist[x][1][4][0].configure(text=datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+
+			if btnid==1:
+				biglist[x][1][0][1].configure(text=f'Update Receipt {editEntrybox.get()}')
+				del sortlist[x]
+				contents=biglist.pop(x)
+
+				receiptposition = sortreceipt(editbox)				
+				biglist.insert(receiptposition, contents)
+				for x, y in enumerate(biglist):
+					for p, q in enumerate(y[1]):
+						q[0].grid(row=3*x+1, column=p)
+						q[1].grid(row=3*x+2, column=p)
+					y[2].grid(row=3*x+2)
+					y[3].grid(row=3*x+3)
+			break
+	updateScrollRegion()
+
+
+def log(*args):
+
+	global identification
+	identification+=1
+	rownum=identification
+	entryboxlist=[
+		ReceiptEntrybox.get().strip(), 
+	    CustomernameEntrybox.get().strip(), 
+		ItemHiredEntrybox.get().strip(), 
+		NumHiredEntrybox.get().strip()]
+
+	for x in entryboxlist:
+		if x =='':
+			isemptylbl.grid(row=2, column=0, columnspan=10, sticky=W)
+			root.after(2000, lambda: removefromgrid(isemptylbl))
+			return
+		if len(x)>14:
+			toolonglbl.grid(row=2, column=0, columnspan=10, sticky=W)
+			root.after(2000, lambda: removefromgrid(toolonglbl))
+			return
+
+	try:
+		entryboxlist[0]=int(entryboxlist[0])
+		entryboxlist[3]=int(entryboxlist[3])
+	except:
+		notanintlbl.grid(row=2, column=0, columnspan=10, sticky=W)
+		root.after(2000, lambda: removefromgrid(notanintlbl))
+		return
+	
+	if entryboxlist[0]<0 or entryboxlist[3]<0:
+		negativeintlbl.grid(row=2, column=0, columnspan=10, sticky=W)
+		root.after(2000, lambda: removefromgrid(negativeintlbl))
+		return
+
+	if entryboxlist[0] in sortlist:
+		alreadyexistslbl.grid(row=2, column=0, columnspan=10, sticky=W)
+		root.after(2000, lambda: removefromgrid(alreadyexistslbl))
+		return	
+
+	receiptposition = sortreceipt(entryboxlist[0])
+
 	biglist.insert(receiptposition, [rownum, [
-	[Label(Frame3, text=receiptnum, font=("Arial", 13, "bold"), height=1),
-	Button(Frame3, text=f"Update Receipt {receiptnum}", command=lambda btnid=1: update(rownum, btnid))],
-	[Label(Frame3, text=CustomernameEntrybox.get()),
+	[Label(Frame3, text=entryboxlist[0], font=("Arial", 13, "bold"), height=1),
+	Button(Frame3, text=f"Update Receipt {entryboxlist[0]}", command=lambda btnid=1: update(rownum, btnid))],
+	[Label(Frame3, text=entryboxlist[1]),
 	Button(Frame3, text=f"Update Name", command=lambda btnid=2: update(rownum, btnid))],
-	[Label(Frame3, text=ItemHiredEntrybox.get()),
+	[Label(Frame3, text=entryboxlist[2]),
 	Button(Frame3, text=f"Update Item", command=lambda btnid=3: update(rownum, btnid))],
-	[Label(Frame3, text=NumHiredEntrybox.get()),
+	[Label(Frame3, text=entryboxlist[3]),
 	Button(Frame3, text=f"Update hired no.", command=lambda btnid=4: update(rownum, btnid))],
 	[Label(Frame3, text=datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
   	Button(Frame3, text="Delete Receipt", command=lambda: deletegroup(rownum))]
@@ -157,21 +212,6 @@ def exitedit():
 			if y!=4:
 				z[1].grid_remove()
 
-def validity():
-	# Label for invalid input for integers
-	notanintlbl = Label(Frame1, text="Not an int or is negative", fg='red')
-	notanintlbl.grid(row=0, column=2)
-	notanintlbl.grid_remove()
-
-	# Label for inputs that are too long
-	toolonglbl = Label(Frame1, text="your input is too long, it must be under 23 characters", fg='red')
-	toolonglbl.grid(row=0, column=2)
-	toolonglbl.grid_remove()
-
-	# Label for input if not between 5-10 campers
-	outsiderangelbl = Label(Frame1, text="Warning: there should be between 5-10 campers", fg='red')
-	outsiderangelbl.grid(row=0, column=3)
-	outsiderangelbl.grid_remove()
 
 def updateScrollRegion():
 	canvas.update_idletasks()
@@ -235,7 +275,29 @@ editTextbox.grid(row=0, column=0)
 editEntrybox = Entry(Frame1)
 editEntrybox.grid(row=1, column=0)
 
-#validity()
+
+# Label for invalid input for integers
+isemptylbl = Label(Frame1, text="Do not leave any inputs empty", fg='red')
+
+
+# Label for invalid input for integers
+notanintlbl = Label(Frame1, text="Do not input non-integers", fg='red')
+
+
+# Label for invalid input for integers
+negativeintlbl = Label(Frame1, text="Do not input negative integers", fg='red')
+
+
+# Label for inputs that are too long
+toolonglbl = Label(Frame1, text="Do not input anything longer than 14 characters", fg='red')
+
+# Label for invalid input for integers
+alreadyexistslbl = Label(Frame1, text="A Receipt with this number already exists", fg='red')
+
+
+
+
+
 
 # Frame 2 keeps the grid of the below stuff in different columns than the stuff in Frame 1
 Frame2 = Frame(root)
