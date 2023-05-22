@@ -50,8 +50,6 @@ def update(rownum, btnid):
 					root.after(2000, lambda: removefromgrid(negativeintlbl))
 					return
 
-			print(sortlist)
-			print(editbox in sortlist)
 			if btnid==1 and editbox in sortlist:
 				alreadyexistslbl.grid(row=2, column=0, columnspan=10, sticky=W)
 				root.after(2000, lambda: removefromgrid(alreadyexistslbl))
@@ -265,6 +263,8 @@ NumHiredEntrybox.grid(row=0, column=7)
 
 Logbtn = Button(Frame1, text= 'Log Receipt', command=log)
 Logbtn.grid(row=0, column=8)
+root.bind('<Return>', log)
+
 
 
 

@@ -1,1 +1,1 @@
-%H:%M:%S
+root.bind('<Return>', log)
