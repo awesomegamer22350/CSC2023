@@ -1,25 +1,9 @@
-
-
-
-
-
-
-#Updating text is removed from delete command 
-#Exiting edit mode updates positions
-#bugtest this
-#also seperated 'updatetest()' into its own function
-
-
-
-
-
-
 from tkinter import *
 from tkinter import ttk
 from datetime import datetime
 
 root = Tk()
-root.title("Julie's Party")
+root.title("Julie's Party Hire")
 root.geometry("1400x800")
 
 def removefromgrid(removethis): #for root.after
@@ -75,18 +59,12 @@ def update(rownum, btnid):
 			biglist[x][1][4][0].configure(text=datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
 			if btnid==1:
-				biglist[x][1][0][1].configure(text=f'Update Receipt {editEntrybox.get()}')
+				biglist[x][1][0][1].configure(text=f'Update Receipt\n{editEntrybox.get()}')
 				del sortlist[x]
 				contents=biglist.pop(x)
 
 				receiptposition = sortreceipt(editbox)				
 				biglist.insert(receiptposition, contents)
-				#for x, y in enumerate(biglist):
-				#	for p, q in enumerate(y[1]):
-				#		q[0].grid(row=3*x+1, column=p)
-				#		q[1].grid(row=3*x+2, column=p)
-				#	y[2].grid(row=3*x+2)
-				#	y[3].grid(row=3*x+3)
 			break
 
 
@@ -150,7 +128,7 @@ def log(*args):
 
 	biglist.insert(receiptposition, [rownum, [
 	[Label(Frame3, text=entryboxlist[0], font=("Arial", 13, "bold"), height=1),
-	Button(Frame3, text=f"Update Receipt {entryboxlist[0]}", command=lambda btnid=1: update(rownum, btnid))],
+	Button(Frame3, text=f"Update Receipt\n{entryboxlist[0]}", command=lambda btnid=1: update(rownum, btnid))],
 	[Label(Frame3, text=entryboxlist[1]),
 	Button(Frame3, text=f"Update Name", command=lambda btnid=2: update(rownum, btnid))],
 	[Label(Frame3, text=entryboxlist[2]),
@@ -160,7 +138,7 @@ def log(*args):
 	[Label(Frame3, text=datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
   	Button(Frame3, text="Delete Receipt", command=lambda: deletegroup(rownum))]
 	], 
-	Label(Frame3, text='', height=2), ttk.Separator(Frame3)])
+	Label(Frame3, text='', height=3), ttk.Separator(Frame3)])
 
 	ReceiptEntrybox.delete(0, 'end')
 	CustomernameEntrybox.delete(0, 'end')
@@ -206,7 +184,7 @@ def editmode():
 	editTextbox.grid()
 	editEntrybox.grid()
 	editbtn.place_forget()
-	exitEdit.place(x=0, y=750)
+	exitEdit.place(x=30, y=720)
 	for x in biglist:
 		for y in x[1]:
 			y[1].grid()
@@ -225,7 +203,7 @@ def exitedit():
 	NumHiredlbl.grid()
 	NumHiredEntrybox.grid()
 	Logbtn.grid()
-	editbtn.place(x=0, y=750)
+	editbtn.place(x=30, y=720)
 	exitEdit.place_forget()
 	updatetext()
 
@@ -254,7 +232,7 @@ identification=-1
 isedit=0
 
 Frame1 = Frame(root)
-Frame1.place(x=0, y=5)
+Frame1.place(x=20, y=10)
 
 Receiptlbl = Label(Frame1, text='Receipt')
 Receiptlbl.grid(row=0, column=0)
@@ -315,10 +293,10 @@ alreadyexistslbl = Label(Frame1, text="A Receipt with this number already exists
 
 # Frame 2 keeps the grid of the below stuff in different columns than the stuff in Frame 1
 Frame2 = Frame(root)
-Frame2.place(x=0, y=100)
+Frame2.place(x=10, y=120)
 # create a canvas
-canvas = Canvas(Frame2, width=1200, height=600, highlightthickness=0)
-canvas.pack(fill=BOTH, side=LEFT, expand=TRUE)
+canvas = Canvas(Frame2, width=1100, height=600, highlightthickness=0)
+canvas.pack(fill=BOTH, side=LEFT, expand=TRUE, padx = (0, 20))
 # create scrollbar
 scrollbar = Scrollbar(Frame2, orient=VERTICAL, command=whentoscroll)
 scrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
@@ -328,17 +306,21 @@ scrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
 canvas['yscrollcommand']=scrollbar.set
 # create another frame inside canvas
 Frame3 = Frame(canvas)
-canvas.create_window(10, 0, window=Frame3, anchor=NW, width=1200)
+canvas.create_window(10, 0, window=Frame3, anchor=NW, width=1100)
 Frame3.bind("<Enter>", lambda event: bindToCanvas())
 Frame3.bind("<Leave>", lambda event: unbindToCanvas())
+
+Frame3.columnconfigure(0, weight=2)
 
 # Text for Catagories
 for i in range(len(categorylist)):
 	Label(Frame3, text=categorylist[i], width=20, height=2, font=("Arial", 14, "bold")).grid(row=0, column=i)
+	if i!=0:
+		Frame3.columnconfigure(i, weight=1)
 
 
-editbtn = Button(root, text="Edit", command=editmode)
-exitEdit = Button(root, text="Exit Edit and Save", command=exitedit)
+editbtn = Button(root, text="Edit", command=editmode, height=3, font=("Arial", 16), bg='yellow')
+exitEdit = Button(root, text="Exit Edit and Save", command=exitedit, height=3, font=("Arial", 16), bg='yellow')
 exitedit()
 
 root.mainloop()
