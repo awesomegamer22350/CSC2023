@@ -140,10 +140,10 @@ def log(*args):
 	], 
 	Label(Frame3, text='', height=3), ttk.Separator(Frame3)])
 
-	ReceiptEntrybox.delete(0, 'end')
-	CustomernameEntrybox.delete(0, 'end')
-	ItemHiredEntrybox.delete(0, 'end')
-	NumHiredEntrybox.delete(0, 'end')
+	#ReceiptEntrybox.delete(0, 'end')
+	#CustomernameEntrybox.delete(0, 'end')
+	#ItemHiredEntrybox.delete(0, 'end')
+	#NumHiredEntrybox.delete(0, 'end')
 	
 	updatetext()
 
@@ -207,21 +207,34 @@ def exitedit():
 	exitEdit.place_forget()
 	updatetext()
 
+def delta(event):
+	if event.num == 5 or event.delta<0:
+		return -1
+	return 1
 
+ 
 def updateScrollRegion():
 	canvas.update_idletasks()
 	canvas.config(scrollregion=Frame3.bbox())
-	
+
+
+
 # prevents allowing unessesary scrolling with mousewheel over scrollbar
 def whentoscroll(*arguments):
 	if Frame3.winfo_height() > canvas.winfo_height():
 		canvas.yview(*arguments)
 
 def bindToCanvas(*args):
-    root.bind_all("<MouseWheel>", lambda event: whentoscroll('scroll', -1*event.delta, 'units'))
+    root.bind_all("<MouseWheel>", lambda event: whentoscroll('scroll', -1*delta(event), 'units'))
+    root.bind_all("<Button-4>", lambda event: whentoscroll('scroll', -1*delta(event), 'units'))
+    root.bind_all("<Button-5>", lambda event: whentoscroll('scroll', -1*delta(event), 'units'))
+
 
 def unbindToCanvas(*args):
 	root.unbind_all("<MouseWheel>")
+	root.unbind_all("<Button-4>")
+	root.unbind_all("<Button-5>")
+
 
 
 
