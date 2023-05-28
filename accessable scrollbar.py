@@ -20,8 +20,7 @@ def sortreceipt(receiptnum):
 		receiptposition+=1
 	sortlist.insert(receiptposition, receiptnum)
 	return receiptposition
-
-
+#new commit
 
 def update(rownum, btnid):
 	for x in range(len(biglist)):
