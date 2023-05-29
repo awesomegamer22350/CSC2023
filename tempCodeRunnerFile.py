@@ -1,1 +1,1 @@
-root.bind('<Return>', log)
+event
