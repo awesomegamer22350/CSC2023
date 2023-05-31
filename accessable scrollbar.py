@@ -102,6 +102,7 @@ def edit(rowid, btnnum):
 			if len(editbox)>14:
 				toolonglbl.grid(row=2, column=0, columnspan=10, sticky=W)
 				root.after(2000, lambda: removefromgrid(toolonglbl))
+				return
 			if btnnum==1 or btnnum==4:
 				try:
 					editbox = int(editbox)
@@ -117,10 +118,11 @@ def edit(rowid, btnnum):
 				alreadyexistslbl.grid(row=2, column=0, columnspan=10, sticky=W)
 				root.after(2000, lambda: removefromgrid(alreadyexistslbl))
 				return
-			if btnnum==4 and editbox<1 or editbox>500:
-				betweenlbl.grid(row=2, column=0, columnspan=10, sticky=W)
-				root.after(2000, lambda: removefromgrid(betweenlbl))
-				return
+			if btnnum==4:
+				if editbox<1 or editbox>500:
+					betweenlbl.grid(row=2, column=0, columnspan=10, sticky=W)
+					root.after(2000, lambda: removefromgrid(betweenlbl))
+					return
 			
 			biglist[row][1][btnnum-1][0].configure(text=editEntrybox.get())
 			biglist[row][1][4][0].configure(text=datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
