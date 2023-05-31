@@ -45,6 +45,10 @@ def log(*args):
 		alreadyexistslbl.grid(row=2, column=0, columnspan=10, sticky=W)
 		root.after(2000, lambda: removefromgrid(alreadyexistslbl))
 		return	
+	if entryboxlist[3]<1 or entryboxlist[3]>500:
+		betweenlbl.grid(row=2, column=0, columnspan=10, sticky=W)
+		root.after(2000, lambda: removefromgrid(betweenlbl))
+		return
 
 	receiptposition = sortreceipt(entryboxlist[0]) #finds which row the receipt should be inserted into
 	#create new row with all the widgets inside
@@ -112,6 +116,10 @@ def edit(rowid, btnnum):
 			if btnnum==1 and editbox in sortlist:
 				alreadyexistslbl.grid(row=2, column=0, columnspan=10, sticky=W)
 				root.after(2000, lambda: removefromgrid(alreadyexistslbl))
+				return
+			if btnnum==4 and editbox<1 or editbox>500:
+				betweenlbl.grid(row=2, column=0, columnspan=10, sticky=W)
+				root.after(2000, lambda: removefromgrid(betweenlbl))
 				return
 			
 			biglist[row][1][btnnum-1][0].configure(text=editEntrybox.get())
@@ -262,16 +270,19 @@ editEntrybox.grid(row=1, column=0)
 isemptylbl = Label(topframe, text="Do not leave any inputs empty", fg='red')
 
 # Label for invalid input for integers
-notanintlbl = Label(topframe, text="Do not input non-integers", fg='red')
+notanintlbl = Label(topframe, text="Do not input non-integers for Receipt Number or Number of items hired", fg='red')
 
 # Label for invalid input for integers
-negativeintlbl = Label(topframe, text="Do not input negative integers", fg='red')
+negativeintlbl = Label(topframe, text="Do not input negative integers for Receipt Number or Number of items hired", fg='red')
 
 # Label for inputs that are too long
 toolonglbl = Label(topframe, text="Do not input anything longer than 14 characters", fg='red')
 
 # Label for invalid input for integers
 alreadyexistslbl = Label(topframe, text="A Receipt with this number already exists", fg='red')
+
+# Label for Number of items Hired (outside between 1-500)
+betweenlbl = Label(topframe, text="The number of items hired must be between 1 and 500", fg='red')
 
 
 # bottomframe holds the receipts and the scrollbar
